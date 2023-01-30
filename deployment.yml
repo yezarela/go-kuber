@@ -1,0 +1,23 @@
+# https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#creating-a-deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-app-deployment
+  labels:
+    app: simple-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simple-app
+  template:
+    metadata:
+      labels:
+        app: simple-app
+    spec:
+      containers:
+      - name: simple-app
+        image: simple-app:latest
+        imagePullPolicy: Never # for local image
+        ports: 
+        - containerPort: 4001 

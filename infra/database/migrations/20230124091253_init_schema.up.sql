@@ -1,0 +1,2 @@
+CREATE TABLE "products" ("id" bigserial,"created_at" timestamptz,"updated_at" timestamptz,"deleted_at" timestamptz,"name" text,"description" text,PRIMARY KEY ("id"));
+CREATE INDEX IF NOT EXISTS "idx_products_deleted_at" ON "products" ("deleted_at");
