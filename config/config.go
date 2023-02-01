@@ -1,7 +1,13 @@
 package config
 
 import (
+	"context"
+	"os"
+
+	secretmanager "cloud.google.com/go/secretmanager/apiv1"
+	"cloud.google.com/go/secretmanager/apiv1/secretmanagerpb"
 	"github.com/ilyakaznacheev/cleanenv"
+	"github.com/pkg/errors"
 )
 
 type Config struct {
@@ -22,4 +28,29 @@ func Load(path string) error {
 	}
 
 	return nil
+}
+
+func LoadFromSecretManager(name string) error {
+	ctx := context.Background()
+	client, err := secretmanager.NewClient(ctx)
+	if err != nil {
+		return errors.Wrap(err, "failed to setup secretmanager client")
+	}
+	defer client.Close()
+
+	accessRequest := &secretmanagerpb.AccessSecretVersionRequest{
+		Name: name,
+	}
+
+	result, err := client.AccessSecretVersion(ctx, accessRequest)
+	if err != nil {
+		return errors.Wrap(err, "failed to access secret version")
+	}
+
+	err = os.WriteFile(".env", result.Payload.Data, 0644)
+	if err != nil {
+		return errors.Wrap(err, "failed to write secret to file")
+	}
+
+	return Load(".env")
 }

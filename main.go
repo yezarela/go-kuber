@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -16,7 +17,13 @@ import (
 )
 
 func init() {
-	err := config.Load(".env")
+	var err error
+	secretName := os.Getenv("SECRET_NAME")
+	if secretName != "" {
+		err = config.LoadFromSecretManager(".env")
+	} else {
+		err = config.Load(".env")
+	}
 	if err != nil {
 		panic(err)
 	}

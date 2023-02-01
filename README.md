@@ -7,8 +7,29 @@
 3. [Migrate CLI](https://github.com/golang-migrate/migrate/blob/master/cmd/migrate/README.md#migrate-cli) to manage migrations
 4. [Mockgen](https://github.com/golang/mock#go-116) to generate mocks
 
+## Installation
+```sh
+# install dependencies
+make dep
+
+# docker compose up
+make setup-local
+
+# run db migrations
+make migrate-up
+```
+
+## Running locally
+Run this command and every changes you make will be automatically rebuild, thanks to Air.
+```sh
+make run
+```
 
 ## Building image
+```sh
+make build-docker
+```
+Or if you prefer to run the image locally
 ```sh
 docker build --tag simple-app .
 docker run --name simple simple-app
