@@ -1,15 +1,19 @@
-FROM golang:1.17-alpine
+FROM golang:1.19.4-alpine3.17 as builder
 
 WORKDIR /app
 
-COPY go.mod ./
-COPY go.sum ./
+COPY . ./
+
 RUN go mod download
 
-COPY *.go ./
+RUN go build -o main main.go
 
-RUN go build -o /simple-app main.go
+FROM alpine:latest
+
+WORKDIR /app
+
+COPY --from=builder /app/main /app/
 
 EXPOSE 4001
 
-CMD [ "/simple-app" ]
+CMD [ "/app/main" ]
